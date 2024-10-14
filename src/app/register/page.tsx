@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import Image from "next/image"
 import Link from "next/link"
+import axios from 'axios'
 const RegisterPage = () => {
 const [email,setEmail]=useState<string>('');
 const [password,setPassword]=useState<string>('');
@@ -10,19 +11,18 @@ const [userCreated,setUserCreated]=useState<boolean>(false);
 const [error,setError] = useState(false)
 async function  handleFormSubmit(e : React.FormEvent<HTMLFormElement>){
     e.preventDefault()
-        setCreatingtUser(true);
-        setError(false)
-        const response = await fetch('/api/register',{
-            method:'POST',
-            body:JSON.stringify({email,password}),
-            headers:{'Content-Type':'application/json'}
-        })
-        if(!response.ok){
-            setError(true);
-        }else{
-            setUserCreated(true);
-        }
+    try {
+        setError(false);
+        setUserCreated(false);
+        setCreatingtUser(true)
+        let userData = await axios.post("/api/register",{email,password})
+        setUserCreated(true);
+    } catch (error) {
+        setError(true)
+    }finally{
         setCreatingtUser(false)
+    }
+   
 }
   return (
     <section className='mt-8'>
@@ -33,7 +33,7 @@ async function  handleFormSubmit(e : React.FormEvent<HTMLFormElement>){
                  </div>
             )}
             {error && (
-                <div className='my-4 text-center'>User Created. <br/> Now you can login {' '}
+                <div className='my-4 text-center'>
                     An error has occurred . <br/>
                     Please try again later.
              </div>
@@ -46,6 +46,9 @@ async function  handleFormSubmit(e : React.FormEvent<HTMLFormElement>){
             <button className='flex gap-4 justify-center\'>
                 <Image src={'/google_logo.jpg'} alt='' width={24} height={24}></Image>
                 Login with google</button>
+            <div className='text-center my-4 border-t pt-4' >
+                Existing Account ? <Link className='underline' href={'/login'}>Login here &raquo;</Link>
+            </div>
         </form>
     </section>
   )
