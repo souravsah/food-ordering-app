@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import {Roboto} from 'next/font/google'
+import { Roboto } from 'next/font/google'
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "./components/layout/Header";
-
+import { AppProvider} from "./components/AppContext"
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -31,11 +31,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main className="max-w-7xl m-auto p-4">
-        <Header/>
-        {children}
-        <footer className="border-t p-8 text-center text-gray-500 mt-16">
-      &copy; 2024 All rights reserved
-    </footer>
+          <AppProvider>
+            <Header />
+            {children}
+            <footer className="border-t p-8 text-center text-gray-500 mt-16">
+              &copy; 2024 All rights reserved
+            </footer>
+
+          </AppProvider>
         </main>
       </body>
     </html>
